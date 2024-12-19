@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="0dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="65dp"
+        android:id="@+id/searchLayout"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        style = "@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+        app:boxCornerRadiusTopStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:startIconDrawable="@drawable/baseline_search_24"
+        android:hint="@string/Search"
+        android:elevation="4dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:id="@+id/searchET"
+            android:backgroundTint="@color/white"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.mapbox.search.ui.view.SearchResultsView
+        android:id="@+id/searchResultsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchLayout"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:paddingTop="8dp"
+        android:paddingBottom="22dp"/>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabspeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@android:color/holo_blue_bright"
+        android:layout_below="@id/searchLayout"
+        android:contentDescription="Speeed fab"
+        android:elevation="8dp"
+        android:text="0 km/h"
+        android:textSize="15dp"
+        android:textColor="@color/white"
+        android:gravity="center"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabClear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/yellow"
+        android:src="@drawable/clear"
+        android:layout_above="@+id/fabadd"
+        android:contentDescription="New FAB"
+        android:elevation="8dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/yellow"
+        android:src="@drawable/baseline_my_location_24"
+        android:layout_above="@+id/setRoute"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="Add Button"
+        android:elevation="8dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/yellow"
+        android:src="@drawable/baseline_add_24"
+        android:layout_above="@+id/setRoute"
+        android:contentDescription="Add Button"
+        android:elevation="8dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/setRoute"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:text="@string/SetRoute"
+        app:backgroundTint="@null"
+        style="@style/btn_signin2"
+        android:fontFamily="sans-serif-medium"/>
+
+</RelativeLayout>
