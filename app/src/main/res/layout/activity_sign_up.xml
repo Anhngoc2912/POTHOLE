@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/decript2"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="40dp"
                     style="@style/edt_email"
                     android:autofillHints="emailAddress"/>
 
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/btn_Signup2"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="40dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -158,14 +158,6 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/google" />
 
-                    <!--<ImageView
-                        android:id="@+id/img_Fb"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/facebook" />-->
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -174,7 +166,7 @@
                     android:orientation="horizontal"
                     android:layout_below="@id/or"
                     android:gravity="center"
-                    android:layout_marginTop="50dp">
+                    android:layout_marginTop="30dp">
 
                     <TextView
                         android:layout_width="wrap_content"
