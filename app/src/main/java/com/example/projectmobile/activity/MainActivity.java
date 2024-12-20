@@ -44,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
         ViewPager myadapter = new ViewPager(this);
         viewPager2.setAdapter(myadapter);
 
-        viewPager2.setPageTransformer(new DepthPageTransformer());//hiệu ứng chuyển màn
+        //viewPager2.setPageTransformer(new DepthPageTransformer());//hiệu ứng chuyển màn
+        // Tắt hiệu ứng chuyển màn
+        viewPager2.setPageTransformer(null);
 
         //click vào item bottom nav
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //vuốt màn hình
+       /* //vuốt màn hình
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
             }
-        });
+        });*/
 
 
     }

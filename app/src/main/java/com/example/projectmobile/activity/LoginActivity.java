@@ -35,7 +35,7 @@ import java.util.TimerTask;
 
 public class LoginActivity extends AppCompatActivity {
 
-    ImageView img_Google, img_Fb;
+    ImageView img_Google;
     Button btn_Signin, btn_Signup;
     ProgressBar progressBar;
     Timer timer;
@@ -54,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
 
         btn_Signin = findViewById(R.id.btn_Signin);
         btn_Signup = findViewById(R.id.btn_Signup);
-        img_Fb = findViewById(R.id.img_Fb);
         img_Google = findViewById(R.id.img_Google);
         progressBar = findViewById(R.id.progressBar);
 

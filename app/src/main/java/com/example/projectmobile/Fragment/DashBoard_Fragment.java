@@ -2,6 +2,7 @@ package com.example.projectmobile.Fragment;
 
 import android.app.DatePickerDialog;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.projectmobile.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -49,6 +51,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DashBoard_Fragment extends Fragment {
 
     private View view;
@@ -58,14 +62,22 @@ public class DashBoard_Fragment extends Fragment {
     private TextView todayCountValue, chooseCountValue, monthlyCountValue;
     private DatabaseReference mDatabase;
 
+    private CircleImageView avatar;
+    private TextView txt_name;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       view = inflater.inflate(R.layout.layout_dashboard_fragment, container, false);
+        view = inflater.inflate(R.layout.layout_dashboard_fragment, container, false);
 
-       barChart = view.findViewById(R.id.barChart);
+        avatar = view.findViewById(R.id.avatar);
+        txt_name = view.findViewById(R.id.name);
+        showUserInformation();
+
+        barChart = view.findViewById(R.id.barChart);
         pieChartLeft = view.findViewById(R.id.pieChartLeft);
         linechart = view.findViewById(R.id.lineChart);
+
         todayCountValue = view.findViewById(R.id.todayCount);
         todayCountValue.setTooltipText(getString(R.string.today_count));
 
@@ -116,6 +128,25 @@ public class DashBoard_Fragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showUserInformation(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            return;
+        }
+        //String email = user.getEmail();
+        //txt_Email.setText(email);
+        String name = user.getDisplayName();
+        if (name == null){
+            txt_name.setVisibility(View.GONE);
+        } else {
+            txt_name.setVisibility(View.VISIBLE);
+            txt_name.setText(name);
+        }
+
+        Uri photo = user.getPhotoUrl();
+        Glide.with(this).load(photo).error(R.drawable.outline_account_circle_24).into(avatar);
     }
 
     private void fetchDataForLast7Days() {
@@ -197,9 +228,9 @@ public class DashBoard_Fragment extends Fragment {
         // Tạo BarDataSet với các giá trị stack
         BarDataSet stackedDataSet = new BarDataSet(stackedEntries, getString(R.string.potholebylevel));
         stackedDataSet.setColors(
-                ColorTemplate.COLORFUL_COLORS[0], // Màu cho Nhẹ
-                ColorTemplate.COLORFUL_COLORS[1], // Màu cho Vừa
-                ColorTemplate.COLORFUL_COLORS[2]  // Màu cho Nặng
+                Color.parseColor("#4CAF50"), // Màu cho Nhẹ (Xanh lá)
+                Color.parseColor("#FFFF00"),  // Màu cho Vừa (Vàng)
+                Color.parseColor("#F44336")   // Màu cho Nặng (Đỏ)
         );
         stackedDataSet.setStackLabels(new String[]{getString(R.string.nhe), getString(R.string.vua), getString(R.string.nang)}); // Nhãn các mức độ
         stackedDataSet.setValueTextColor(Color.BLACK);
@@ -321,7 +352,7 @@ public class DashBoard_Fragment extends Fragment {
                 // Cấu hình LineDataSet
                 nheLineDataSet.setColor(Color.GREEN);
                 nheLineDataSet.setDrawValues(false);
-                vuaLineDataSet.setColor(Color.BLACK);
+                vuaLineDataSet.setColor(Color.YELLOW);
                 vuaLineDataSet.setDrawValues(false);
                 nangLineDataSet.setColor(Color.RED);
                 nangLineDataSet.setDrawValues(false);

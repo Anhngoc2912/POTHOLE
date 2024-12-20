@@ -10,16 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 public class Cus_Toast extends android.app.Dialog {
-    public Cus_Toast(@NonNull Context context, String message) {
+    public Cus_Toast(@NonNull Context context, String message, String cancel) {
         super(context);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.cus_toast);
 
         TextView messagetxt = findViewById(R.id.message);
-        ImageView cancelbutton = findViewById(R.id.cancel);
+        TextView cancelbutton = findViewById(R.id.cancel);
 
         messagetxt.setText(message);
+        cancelbutton.setText(cancel);
 
         cancelbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -27,12 +28,6 @@ public class Cus_Toast extends android.app.Dialog {
                 dismiss();
             }
         });
-        // Tự động đóng dialog sau 2 giây
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dismiss(); // Đóng dialog
-            }
-        }, 2000); // 2000 milliseconds = 2 seconds
+
     }
 }

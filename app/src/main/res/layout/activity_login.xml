@@ -150,13 +150,13 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/google" />
 
-                    <ImageView
+                    <!--<ImageView
                         android:id="@+id/img_Fb"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="20dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/facebook" />
+                        android:src="@drawable/facebook" />-->
 
                 </LinearLayout>
 

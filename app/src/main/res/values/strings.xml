@@ -30,7 +30,7 @@
     <string name="confirm_password">Confirm Password:</string>
     <string name="reenter_password">Re-enter Password</string>
     <string name="home">Home</string>
-    <string name="dashboard">Dashboard</string>
+    <string name="dashboard">DASHBOARD</string>
     <string name="map">Map</string>
     <string name="setting">Setting</string>
     <string name="permission_granted">Permission Granted</string>
@@ -67,7 +67,7 @@
     <string name="forgotpassword">Forgot password</string>
     <string name="OR">OR</string>
     <string name="dont_have_account">Not have an account</string>
-    <string name="decript3">Sign up to use the app or register with Facebook or Google</string>
+    <string name="decript3">Sign up to use the app or register with Google</string>
     <string name="Password">Password</string>
     <string name="Confirm_Password">Confirm Password</string>
     <string name="Do_you_have_an_account">Do you have an account</string>
@@ -105,7 +105,7 @@
     <string name="potholeinfo">Pothole information</string>
     <string name="close">Close</string>
     <string name="selectpotholelevel">Select pothole level</string>
-    <string name="confirm">Confirm</string>
+    <string name="confirm">CONFIRM</string>
     <string name="sharingpothole">Sharing potholes...</string>
     <string name="cancel">Cancel</string>
     <string name="plserlocatinmap">Please select a location in map</string>
@@ -128,8 +128,14 @@
     <string name="deleteaccount">We are sad that you want to leave us, but please note that account deletion is irreversible</string>
     <string name="OK">OK</string>
     <string name="HelpCentre2">Hole Alert is an app that detects potholes around VietNam National University, HCMC, helping users avoid bumpy roads.</string>
-    <string name="Warning">Cảnh báo: Sắp đến ổ gà</string>
     <string name="Thongbao">Notification</string>
     <string name="Delete">Delete</string>
+    <string name="notienable">Notifications enabled</string>
+    <string name="potholewarning">Cảnh báo: Sắp đến ổ gà</string>
+    <string name="fetchingroute">Fetching route...</string>
+    <string name="detectingpothole">Detecting potholes...</string>
+    <string name="Hi">Hi,</string>
+    <string name="Thongke">STATISTICAL DATA</string>
+    <string name="close2">CLOSE</string>
 
 </resources>

@@ -20,7 +20,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/setting"
-                style="@style/titile" />
+                style="@style/titile"
+                android:textColor="@color/green"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -58,7 +59,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tag"
                 android:background="@drawable/cus_backgr_setting"
-                android:drawableRight="@drawable/baseline_navigate_next_24"
+                android:drawableEnd="@drawable/baseline_navigate_next_24"
+                android:drawableStart="@drawable/outline_person_outline_24"
+                android:drawablePadding="15dp"
                 android:fontFamily="sans-serif-medium"
                 android:padding="17dp"
                 android:text="@string/infor"
@@ -83,7 +86,10 @@
                 android:padding="17dp"
                 android:text="@string/change_language"
                 android:textSize="17dp"
-                android:fontFamily="sans-serif-medium"/>
+                android:fontFamily="sans-serif-medium"
+                android:drawableEnd="@drawable/baseline_navigate_next_24"
+                android:drawableStart="@drawable/baseline_language_24"
+                android:drawablePadding="15dp"/>
 
             <TextView
                 android:id="@+id/Notification"
@@ -92,10 +98,12 @@
                 android:layout_below="@+id/language"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/cus_backgr_setting"
-                android:drawableRight="@drawable/baseline_navigate_next_24"
+                android:drawableEnd="@drawable/baseline_navigate_next_24"
                 android:fontFamily="sans-serif-medium"
                 android:padding="17dp"
                 android:text="@string/Notification_Settings"
+                android:drawableStart="@drawable/outline_notifications_active_24"
+                android:drawablePadding="15dp"
                 android:textSize="17dp" />
 
             <TextView
@@ -114,11 +122,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tag2"
                 android:background="@drawable/cus_backgr_setting"
-                android:drawableRight="@drawable/baseline_navigate_next_24"
+                android:drawableEnd="@drawable/baseline_navigate_next_24"
                 android:fontFamily="sans-serif-medium"
                 android:padding="17dp"
                 android:text="@string/About"
-                android:textSize="17dp" />
+                android:textSize="17dp"
+                android:drawableStart="@drawable/baseline_error_outline_24"
+                android:drawablePadding="15dp"/>
 
             <TextView
                 android:id="@+id/support2"
@@ -127,11 +137,13 @@
                 android:layout_below="@id/support"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/cus_backgr_setting"
-                android:drawableRight="@drawable/baseline_navigate_next_24"
+                android:drawableEnd="@drawable/baseline_navigate_next_24"
                 android:fontFamily="sans-serif-medium"
                 android:padding="17dp"
                 android:text="@string/HelpCentre"
-                android:textSize="17dp" />
+                android:textSize="17dp"
+                android:drawablePadding="15dp"
+                android:drawableStart="@drawable/baseline_help_outline_24"/>
 
             <Button
                 android:id="@+id/btn_Logout"

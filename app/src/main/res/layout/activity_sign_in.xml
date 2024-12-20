@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/backgr2_top">
+        android:background="@drawable/img_1">
 
         <ImageView
             android:id="@+id/btn_Back"
@@ -87,12 +87,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/edpw">
 
-                <CheckBox
+                <!--<CheckBox
                     android:id="@+id/remember"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:text="@string/remember" />
+                    android:text="@string/remember" />-->
 
                 <TextView
                     android:id="@+id/forgotPassword"
@@ -100,7 +100,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/forgotpassword"
-                    android:textColor="@color/orange" />
+                    android:textColor="@color/orange"
+                    android:gravity="end"
+                    android:padding="3dp"/>
 
             </LinearLayout>
 
@@ -160,13 +162,13 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/google" />
 
-                <ImageView
+                <!--<ImageView
                     android:id="@+id/img_Fb"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="20dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/facebook" />
+                    android:src="@drawable/facebook" />-->
 
             </LinearLayout>
 

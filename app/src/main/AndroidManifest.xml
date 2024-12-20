@@ -25,9 +25,9 @@
         <!--<activity
             android:name=".Fragment.User_Activity"
             android:exported="false" />-->
-        <activity
+        <!--<activity
             android:name=".activity.UpdateProfile_Activity"
-            android:exported="false" />
+            android:exported="false" />-->
         <!--<activity
             android:name=".Fragment.Setting_Activity"
             android:exported="false" />-->

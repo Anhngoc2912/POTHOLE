@@ -45,6 +45,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.projectmobile.Cus_Dialog;
 import com.example.projectmobile.Cus_Toast;
+import com.example.projectmobile.Cus_Toast2;
 import com.example.projectmobile.R;
 import com.example.projectmobile.SharePothole;
 import com.example.projectmobile.activity.MainActivity;
@@ -136,9 +137,9 @@ import kotlin.jvm.functions.Function1;
 public class Home_Fragment extends Fragment implements SensorEventListener {
 
     private View view;
-    private MapView mapview;
-    private MaterialButton setRoute;
-    private FloatingActionButton fab, fabadd, fabClear;
+    MapView mapview;
+    MaterialButton setRoute;
+    FloatingActionButton fab, fabadd, fabClear;
     ExtendedFloatingActionButton fabspeed;
     Point point;
     DatabaseReference reference = null;
@@ -156,6 +157,8 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
     private List<Point> routePoints = new ArrayList<>();
 
     private boolean isNavigationStopped = false;
+
+    boolean isDestinationSet = false;
 
     //Sensor Accelerometer
     private SensorManager sensorManager;
@@ -193,6 +196,8 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
 
             // Kiểm tra khoảng cách với các ổ gà
             checkProximityToPotholes(userLatitude, userLongitude);
+
+            updateSpeedOnFAB(speed);
 
             if (focusLocation) {
                 updateCamera(Point.fromLngLat(location.getLongitude(), location.getLatitude()), (double) location.getBearing());
@@ -255,8 +260,8 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
     }
 
     private void enableNotifications() {
-        // Đây là nơi bạn cấu hình cho thông báo nếu cần
-        Toast.makeText(getContext(), "Notifications enabled", Toast.LENGTH_SHORT).show();
+        // Đây là nơi cấu hình cho thông báo nếu cần
+        Toast.makeText(getContext(), getString(R.string.notienable), Toast.LENGTH_SHORT).show();
     }
 
     private void checkPermissions() {
@@ -292,18 +297,40 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     SharePothole pothole = dataSnapshot.getValue(SharePothole.class);
                     if (pothole != null) {
+                        String potholeId = dataSnapshot.getKey();
+
                         double potholeLatitude = pothole.getLatitude();
                         double potholeLongitude = pothole.getLongitude();
 
-                        // Tính khoảng cách
-                        float distance = calculateDistance(userLatitude, userLongitude, potholeLatitude, potholeLongitude);
+                        if (routePoints.isEmpty()) {
+                            // Không có route
+                            float distanceToUser = calculateDistance(userLatitude, userLongitude, potholeLatitude, potholeLongitude);
+                            if (!warnedPotholes.contains(potholeId) && distanceToUser < 50) {
+                                triggerPotholeAlert(pothole);
+                                warnedPotholes.add(potholeId);
+                            } else if (warnedPotholes.contains(potholeId) && distanceToUser > 60) {
+                                warnedPotholes.remove(potholeId);
+                            }
+                        } else {
+                            // Có route, kiểm tra ổ gà gần route
+                            boolean isPotholeOnRoute = false;
+                            for (Point routePoint : routePoints) {
+                                float distanceToRoutePoint = calculateDistance(routePoint.latitude(), routePoint.longitude(), potholeLatitude, potholeLongitude);
+                                if (distanceToRoutePoint <= 2) {
+                                    isPotholeOnRoute = true;
+                                    break;
+                                }
+                            }
 
-                        // Kiểm tra cảnh báo
-                        if (!warnedPotholes.contains(pothole.getId()) && distance < 50) {
-                            triggerPotholeAlert(pothole);
-                            warnedPotholes.add(pothole.getId()); // Đánh dấu ổ gà đã được cảnh báo
-                        } else if (warnedPotholes.contains(pothole.getId()) && distance > 60) {
-                            warnedPotholes.remove(pothole.getId()); // Reset trạng thái nếu người dùng rời xa ổ gà
+                            if (isPotholeOnRoute) {
+                                float distanceToUser = calculateDistance(userLatitude, userLongitude, potholeLatitude, potholeLongitude);
+                                if (!warnedPotholes.contains(potholeId) && distanceToUser < 50) {
+                                    triggerPotholeAlert(pothole);
+                                    warnedPotholes.add(potholeId);
+                                } else if (warnedPotholes.contains(potholeId) && distanceToUser > 60) {
+                                    warnedPotholes.remove(potholeId);
+                                }
+                            }
                         }
                     }
                 }
@@ -335,15 +362,11 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
             vibrator.vibrate(VibrationEffect.createOneShot(2000, 255));
         }
 
-        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.alert);
+        MediaPlayer mediaPlayer = MediaPlayer.create(getActivity(), R.raw.alert);
         mediaPlayer.start();
 
         // Hiển thị thông báo
-        Cus_Toast dialog = new Cus_Toast(getContext(),
-                getString(R.string.Warning));
-
-        dialog.show();
-        //Toast.makeText(getContext(), "Cảnh báo: Sắp đến ổ gà ", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getString(R.string.potholewarning), Toast.LENGTH_LONG).show();
 
         mediaPlayer.setOnCompletionListener(mp -> {
             mediaPlayer.release();
@@ -395,9 +418,10 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
 
         mapview = view.findViewById(R.id.mapView);
         fabClear = view.findViewById(R.id.fabClear);
+        fabClear.hide();
         fabadd = view.findViewById(R.id.fabadd);
-        fab = view.findViewById(R.id.fab);
         fabspeed = view.findViewById(R.id.fabspeed);
+        fab = view.findViewById(R.id.fab);
         fab.hide();
         setRoute = view.findViewById(R.id.setRoute);
 
@@ -452,11 +476,17 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions().withTextAnchor(TextAnchor.CENTER).withIconImage(bitmap1)
                                 .withPoint(point);
                         pointAnnotationManager1.create(pointAnnotationOptions);
+                        fabClear.show();
+                        isDestinationSet = true;
 
                         setRoute.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                fetchRoute(point);
+                                if (isDestinationSet){
+                                    fetchRoute(point);
+                                } else {
+                                    Toast.makeText(getContext(), getString(R.string.plserlocatinmap), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                         return true;
@@ -481,7 +511,7 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                             public void accept(DataSnapshot dataSnapshot) {
                                 SharePothole location1 = dataSnapshot.getValue(SharePothole.class);
                                 if (location1 != null && !location1.getId().equals(location.getId())) {
-                                    if (bitmap != null && bitmap2 != null && bitmap3 != null) {  // Kiểm tra xem bitmap có null không
+                                    if (bitmap != null && bitmap2 != null && bitmap3 != null) {
                                         String severity = location1.getSeverity();
                                         Bitmap selectedBitmap = null;
                                         if ("Nhẹ".equals(severity)) {
@@ -505,7 +535,6 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                                     } else {
                                         Toast.makeText(getContext(), getString(R.string.errorbitmapnotinitialize), Toast.LENGTH_SHORT).show();
                                     }
-
                                 }
                             }
                         });
@@ -519,15 +548,29 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                                         SharePothole location1 = dataSnapshot.getValue(SharePothole.class);
                                         // Kiểm tra vị trí của marker và dữ liệu trong Firebase có trùng khớp không
                                         if (location1 != null && pointAnnotation.getPoint().longitude() == location1.getLongitude() && pointAnnotation.getPoint().latitude() == location1.getLatitude()) {
+                                            String severityLocalized = "";
+                                            switch (location1.getSeverity()) {
+                                                case "Nhẹ":
+                                                    severityLocalized = getString(R.string.nhe);
+                                                    break;
+                                                case "Vừa":
+                                                    severityLocalized = getString(R.string.vua);
+                                                    break;
+                                                case "Nặng":
+                                                    severityLocalized = getString(R.string.nang);
+                                                    break;
+                                            }
+
                                             String info = getString(R.string.contributorname) + location1.getName() + "\n" +
                                                     getString(R.string.location) + location1.getLatitude() + ", " + location1.getLongitude() + "\n" +
                                                     getString(R.string.contributiondate) + location1.getDate() + "\n" +
-                                                    getString(R.string.severity) + location1.getSeverity();
+                                                    getString(R.string.severity) + severityLocalized;
 
                                             // Tạo Dialog để hiển thị thông tin
+                                            Cus_Toast dialog = new Cus_Toast(getActivity(), info, getString(R.string.close2));
+                                            dialog.show();
 
-
-                                            new AlertDialog.Builder(getActivity())
+                                            /*new AlertDialog.Builder(getActivity())
                                                     .setTitle(getString(R.string.potholeinfo))
                                                     .setMessage(info)  // Hiển thị thông tin ổ gà
                                                     .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
@@ -537,7 +580,7 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                                                         }
                                                     })
                                                     .setCancelable(true)  // Cho phép đóng Dialog khi nhấn ngoài vùng dialog
-                                                    .show();
+                                                    .show();*/
                                         }
                                     }
                                 });
@@ -560,7 +603,6 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                         if (user == null) {
                             return;
                         }
-
                         String id = user.getUid();
                         String name = user.getDisplayName();
                         String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
@@ -576,6 +618,13 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // Lưu mức độ người dùng chọn vào selectedSeverity
                                         selectedSeverity[0] = severityOptions[which];
+                                        if (selectedSeverity[0].equals("Mild") || selectedSeverity[0].equals("Léger")) {
+                                            selectedSeverity[0] = "Nhẹ";
+                                        } else if (selectedSeverity[0].equals("Moderate") || selectedSeverity[0].equals("Modéré")) {
+                                            selectedSeverity[0] = "Vừa";
+                                        } else if (selectedSeverity[0].equals("Severe") || selectedSeverity[0].equals("Sévère")) {
+                                            selectedSeverity[0] = "Nặng";
+                                        }
                                     }
                                 })
                                 .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
@@ -590,6 +639,7 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                                         // Tạo thông tin ổ gà mới
                                         SharePothole location = new SharePothole();
                                         location.setId(newReference.getKey());  // Lấy key của reference mới tạo
+                                        location.setId(id);
                                         location.setName(name);
                                         location.setLongitude(point.longitude());
                                         location.setLatitude(point.latitude());
@@ -611,6 +661,8 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                     public void onClick(View view) {
                         mapboxNavigation.setNavigationRoutes(Collections.emptyList());
                         routePoints.clear();
+                        fabClear.hide();
+                        isDestinationSet = false;
                         pointAnnotationManager1.deleteAll();
                     }
                 });
@@ -633,10 +685,17 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                         pointAnnotationManager1.create(pointAnnotationOptions);
                         updateCamera(placeAutocompleteSuggestion.getCoordinate(), 0.0);
 
+                        isDestinationSet = true;
+
                         setRoute.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                fetchRoute(placeAutocompleteSuggestion.getCoordinate());
+                                if (isDestinationSet) {
+                                    fetchRoute(placeAutocompleteSuggestion.getCoordinate());
+                                    fabClear.show();
+                                } else {
+                                    Toast.makeText(getContext(), getString(R.string.plserlocatinmap), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                     }
@@ -719,13 +778,14 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
 
     @SuppressLint("MissingPermission")
     private void fetchRoute(Point destination) {
+        isNavigationStopped = false;
         LocationEngine locationEngine = LocationEngineProvider.getBestLocationEngine(getActivity());
         locationEngine.getLastLocation(new LocationEngineCallback<LocationEngineResult>() {
             @Override
             public void onSuccess(LocationEngineResult result) {
                 Location location = result.getLastLocation();
                 setRoute.setEnabled(false);
-                setRoute.setText("Fetching route...");
+                setRoute.setText(getString(R.string.fetchingroute));
 
                 RouteOptions.Builder builder = RouteOptions.builder()
                         .language("vi")
@@ -757,7 +817,7 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                         fab.performClick();
                         mapboxNavigation.setNavigationRoutes(list);
                         setRoute.setEnabled(true);
-                        setRoute.setText("Set route");
+                        setRoute.setText(getString(R.string.SetRoute));
 
                         mapboxNavigation.registerLocationObserver(new LocationObserver() {
                             @Override
@@ -768,7 +828,6 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                             public void onNewLocationMatcherResult(@NonNull LocationMatcherResult locationMatcherResult) {
                                 Location currentLocation = locationMatcherResult.getEnhancedLocation();
                                 Location destinationLocation = new Location("");
-
                                 destinationLocation.setLatitude(destination.latitude());
                                 destinationLocation.setLongitude(destination.longitude());
 
@@ -890,7 +949,7 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                     isBumpSessionActive = true;
                     bumpSessionStartTime = currentTime;
                     maxAccelerationInSession = acceleration;
-                    Toast.makeText(getContext(), "Đang phát hiện ổ gà...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.detectingpothole), Toast.LENGTH_SHORT).show();
                 }
             } else if (isBumpSessionActive) {
                 // Nếu có phiên, cập nhật gia tốc lớn nhất
@@ -900,24 +959,74 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                 if (currentTime - bumpSessionStartTime > SESSION_DURATION) {
                     isBumpSessionActive = false;
                     String severity = classifyBump(maxAccelerationInSession);
+                    String severity1;
+
+                    if (severity.equals("Nhẹ")){
+                        severity1 = getString(R.string.nhe);
+                    } else if (severity.equals("Vừa")){
+                        severity1 = getString(R.string.vua);
+                    } else {
+                        severity1 = getString(R.string.nang);
+                    }
 
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user == null) {
                         return;
                     }
-
                     String id = user.getUid();
                     String name = user.getDisplayName();
                     String currentDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                    // Hiển thị AlertDialog
+                    Cus_Dialog dialog = new Cus_Dialog(getActivity(),
+                            getString(R.string.detect1pothole) + severity1 + getString(R.string.wanttosaveinfo),
+                            getString(R.string.confirm),
+                            getString(R.string.cancel),
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    // Chia sẻ vị trí và thông tin ổ gà
+                                    Toast.makeText(getContext(), getString(R.string.sharingpothole), Toast.LENGTH_SHORT).show();
+
+                                    // Tạo reference mới mỗi lần nhấn nút
+                                    DatabaseReference newReference = FirebaseDatabase.getInstance().getReference().child("sharedPothole").push();
+
+                                    // Tạo thông tin ổ gà mới
+                                    SharePothole location = new SharePothole();
+                                    location.setId(newReference.getKey());  // Lấy key của reference mới tạo
+                                    location.setId(id);
+                                    location.setName(name);
+                                    location.setLongitude(point.longitude());
+                                    location.setLatitude(point.latitude());
+                                    location.setDate(currentDate);
+                                    location.setSeverity(severity);  // Sử dụng giá trị từ selectedSeverity
+
+                                    // Lưu ổ gà vào Firebase
+                                    newReference.setValue(location);
+
+                                }
+                            },
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+
+                                }
+                            });
+
+                    dialog.show();
+
+                    /*AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                             .setTitle(getString(R.string.selectpotholelevel))
-                            .setMessage(getString(R.string.detect1pothole) + severity + getString(R.string.wanttosaveinfo))
+                            .setMessage(getString(R.string.detect1pothole) + severity1 + getString(R.string.wanttosaveinfo))
                             .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     // Chia sẻ vị trí và thông tin ổ gà
-                                    Toast.makeText(getContext(), getString(R.string.sharingpothole), Toast.LENGTH_SHORT).show();
+                                    Cus_Toast2 cusToast2 = new Cus_Toast2(getActivity(), getString(R.string.sharingpothole));
+                                    cusToast2.show();
+                                    //Toast.makeText(getContext(), getString(R.string.sharingpothole), Toast.LENGTH_SHORT).show();
 
                                     // Tạo reference mới mỗi lần nhấn nút
                                     DatabaseReference newReference = FirebaseDatabase.getInstance().getReference().child("sharedPothole").push();
@@ -937,17 +1046,17 @@ public class Home_Fragment extends Fragment implements SensorEventListener {
                                 }
                             })
                             .setNegativeButton(getString(R.string.cancel), null) // Nếu người dùng không muốn chọn mức độ, có thể hủy
-                            .show();
+                            .show();*/
 
-                    // Tạo Handler để tự động đóng AlertDialog sau 2 giây
+                    // Tạo Handler để tự động đóng AlertDialog sau 3 giây
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (alertDialog.isShowing()) {
-                                alertDialog.dismiss(); // Đóng AlertDialog nếu còn hiển thị
+                            if (dialog.isShowing()) {
+                                dialog.dismiss(); // Đóng AlertDialog nếu còn hiển thị
                             }
                         }
-                    }, 2000); // Thời gian trì hoãn là 2000ms (2 giây)
+                    }, 3000); // Thời gian trì hoãn là 3000ms (3 giây)
                 }
             }
             lastAcceleration = acceleration;

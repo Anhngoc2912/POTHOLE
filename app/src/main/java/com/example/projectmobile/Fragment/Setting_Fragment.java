@@ -109,7 +109,6 @@ public class Setting_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Cus_Dialog dialog = new Cus_Dialog(getActivity(),
-                        getString(R.string.Thongbao),
                         getString(R.string.HelpCentre2),
                         getString(R.string.OK),
                         getString(R.string.home),
@@ -135,10 +134,14 @@ public class Setting_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Cus_Dialog dialog = new Cus_Dialog(getActivity(),
-                        getString(R.string.Thongbao),
                         getString(R.string.deleteaccount),
                         getString(R.string.OK),
                         getString(R.string.Delete),
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                            }
+                        },
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -160,11 +163,6 @@ public class Setting_Fragment extends Fragment {
                                         }
                                     });
                                 }
-                            }
-                        },
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
                             }
                         });
 

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#E1000000"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sharing potholes..."
+        android:textColor="@color/white"
+        android:padding="8dp"
+        android:textSize="18dp" />
+    
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/Theme.AppCompat.Light"/>
+
+</LinearLayout>

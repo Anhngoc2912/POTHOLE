@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/backgr2_end">
+        android:background="@drawable/img_4">
 
         <ImageView
             android:id="@+id/btn_Back3"
@@ -81,9 +81,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/edt_Email"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="25dp"
-                    style="@style/edt_password"
-                    />
+                    android:layout_marginTop="23dp"
+                    style="@style/edt_password" />
 
                 <EditText
                     android:id="@+id/edt_ConfirmPass"
@@ -91,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/edt_Password"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="23dp"
                     android:hint="@string/Confirm_Password"
                     style="@style/edt_password" />
 
@@ -159,13 +158,13 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/google" />
 
-                    <ImageView
+                    <!--<ImageView
                         android:id="@+id/img_Fb"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="20dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/facebook" />
+                        android:src="@drawable/facebook" />-->
 
                 </LinearLayout>
 
